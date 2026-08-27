@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Code,
   Palette,
+  Grid,
   Undo2,
   Redo2,
   Sparkles,
@@ -14,6 +15,7 @@ import { ToolBar } from './ToolBar';
 import { VectorCanvas } from './VectorCanvas';
 import { SvgCodeEditor } from './SvgCodeEditor';
 import { ShapeAssistants } from './ShapeAssistants';
+import { PixelCanvas } from './PixelCanvas';
 import { getGeometricTemplatePath } from '../../utils/templatePresets';
 
 interface GlyphEditorProps {
@@ -39,7 +41,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
   onUndo,
   onRedo,
 }) => {
-  const [editorMode, setEditorMode] = useState<'visual' | 'code'>('visual');
+  const [editorMode, setEditorMode] = useState<'pixel' | 'visual' | 'code'>('pixel');
   const [currentTool, setCurrentTool] = useState<EditorTool>('pen');
   const [snapToGrid, setSnapToGrid] = useState(true);
   const [showGuides, setShowGuides] = useState(true);
@@ -49,6 +51,14 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
   const handleSvgPathChange = (newPath: string) => {
     onUpdateGlyph({
       svgPath: newPath,
+      isCompleted: !!newPath && newPath.trim().length > 0,
+    });
+  };
+
+  const handlePixelChange = (newPath: string, newGrid: boolean[][]) => {
+    onUpdateGlyph({
+      svgPath: newPath,
+      pixelGrid: newGrid,
       isCompleted: !!newPath && newPath.trim().length > 0,
     });
   };
@@ -74,7 +84,9 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
 
   return (
     <div className="flex flex-col gap-3 bg-slate-900/80 backdrop-blur border border-slate-800/80 rounded-2xl p-4 shadow-xl">
+      {/* Editor Header Navigation & Info */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+        {/* Left: Glyph Switcher & Title */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1">
             <button
@@ -111,6 +123,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
           </div>
         </div>
 
+        {/* Center: Undo / Redo & Template Blueprints */}
         <div className="flex items-center gap-2">
           {onUndo && (
             <button
@@ -135,7 +148,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
 
           <button
             onClick={handleResetToTemplate}
-            title="Load standard geometric blueprint for this character"
+            title="Load standard blueprint for this character"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-medium transition-all"
           >
             <Sparkles size={14} className="text-indigo-400" />
@@ -143,6 +156,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
           </button>
         </div>
 
+        {/* Right: Advance Width Control & Mode Tabs */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 bg-slate-950 px-3 py-1 rounded-lg border border-slate-800 text-xs">
             <Sliders size={13} className="text-cyan-400" />
@@ -158,7 +172,19 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
             />
           </div>
 
+          {/* Mode Switcher */}
           <div className="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button
+              onClick={() => setEditorMode('pixel')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                editorMode === 'pixel'
+                  ? 'bg-brand-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Grid size={14} />
+              <span>Pixel Board (48x48)</span>
+            </button>
             <button
               onClick={() => setEditorMode('visual')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
@@ -168,7 +194,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
               }`}
             >
               <Palette size={14} />
-              <span>Visual Studio</span>
+              <span>Vector Studio</span>
             </button>
             <button
               onClick={() => setEditorMode('code')}
@@ -185,6 +211,18 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
         </div>
       </div>
 
+      {/* MODE 1: 48x48 Pixel Grid Board */}
+      {editorMode === 'pixel' && (
+        <PixelCanvas
+          currentSvgPath={currentGlyph.svgPath}
+          initialGrid={currentGlyph.pixelGrid}
+          onChangeSvgPath={handlePixelChange}
+          metrics={metrics}
+          advanceWidth={currentGlyph.advanceWidth || 600}
+        />
+      )}
+
+      {/* MODE 2: Visual Vector Studio */}
       {editorMode === 'visual' && (
         <div className="flex flex-col gap-2">
           <ToolBar
@@ -224,6 +262,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
         </div>
       )}
 
+      {/* MODE 3: SVG Code Studio */}
       {editorMode === 'code' && (
         <SvgCodeEditor
           svgPath={currentGlyph.svgPath}

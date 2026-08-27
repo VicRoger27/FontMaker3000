@@ -11,6 +11,13 @@ import {
 import { compileFontProject, generateCssSnippet, svgPathToOpentypePath } from '../fontCompiler';
 import { createDefaultFontProject } from '../templatePresets';
 import { transformSvgPath, generateStyledProject } from '../styleGenerator';
+import {
+  createEmptyPixelGrid,
+  pixelGridToSvgPath,
+  shiftPixelGrid,
+  invertPixelGrid,
+  drawPixelLine,
+} from '../pixelConverter';
 
 describe('SVG Vector & Geometry Engine', () => {
   it('extracts and cleans raw SVG path from d attribute or markup', () => {
@@ -55,12 +62,53 @@ describe('SVG Vector & Geometry Engine', () => {
   });
 });
 
+describe('48x48 Pixel Grid Engine', () => {
+  it('creates empty 48x48 grid', () => {
+    const grid = createEmptyPixelGrid(48);
+    expect(grid.length).toBe(48);
+    expect(grid[0].length).toBe(48);
+    expect(grid[0][0]).toBe(false);
+  });
+
+  it('converts pixel grid into merged SVG path', () => {
+    const grid = createEmptyPixelGrid(48);
+    grid[10][10] = true;
+    grid[10][11] = true;
+    grid[10][12] = true;
+    const svg = pixelGridToSvgPath(grid, 1000);
+    expect(svg).toContain('M');
+    expect(svg).toContain('Z');
+  });
+
+  it('shifts pixel grid properly', () => {
+    const grid = createEmptyPixelGrid(48);
+    grid[10][10] = true;
+    const shifted = shiftPixelGrid(grid, 1, 2);
+    expect(shifted[12][11]).toBe(true);
+    expect(shifted[10][10]).toBe(false);
+  });
+
+  it('inverts pixel grid correctly', () => {
+    const grid = createEmptyPixelGrid(48);
+    grid[0][0] = true;
+    const inverted = invertPixelGrid(grid);
+    expect(inverted[0][0]).toBe(false);
+    expect(inverted[0][1]).toBe(true);
+  });
+
+  it('draws straight pixel lines using Bresenham algorithm', () => {
+    const grid = createEmptyPixelGrid(48);
+    const lineGrid = drawPixelLine(grid, 0, 0, 0, 5, true);
+    expect(lineGrid[0][0]).toBe(true);
+    expect(lineGrid[0][5]).toBe(true);
+  });
+});
+
 describe('OpenType Font Compiler', () => {
   it('compiles SVG path into opentype.Path in Cartesian space', () => {
     const otPath = svgPathToOpentypePath('M 100 100 L 500 100 L 500 800 Z', 800);
     expect(otPath.commands.length).toBeGreaterThan(0);
     const first = otPath.commands[0] as { type: string; x?: number; y?: number };
-    // Baseline y=800 -> SVG y=100 converts to font y=700
     expect(first.y).toBe(700);
   });
 

@@ -47,6 +47,7 @@ export interface Glyph {
   tags?: string[];
   isCompleted?: boolean;
   modifiedAt?: number;
+  pixelGrid?: boolean[][];
 }
 
 export interface FontProject {
@@ -75,6 +76,14 @@ export type EditorTool =
   | 'arc'
   | 'brush'
   | 'eraser';
+
+export type PixelTool =
+  | 'pencil'
+  | 'eraser'
+  | 'bucket'
+  | 'rect'
+  | 'circle'
+  | 'line';
 
 export interface StyleModifiers {
   weightDelta: number;
