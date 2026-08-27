@@ -321,7 +321,7 @@ export function getGeometricTemplatePath(char: string): string {
  * Creates a complete initial FontProject
  */
 export function createDefaultFontProject(
-  name = 'MyCustomFont',
+  name = 'Font Maker 3000',
   withTemplates = true
 ): FontProject {
   const glyphs: Record<string, Glyph> = {};
@@ -364,7 +364,7 @@ export function createDefaultFontProject(
     styleName: 'Regular',
     version: '1.0.0',
     author: 'Font Maker Creator',
-    description: 'Custom font created with FontForge Studio',
+    description: 'Custom font created with Font Maker 3000',
     metrics: { ...DEFAULT_METRICS },
     glyphs,
     createdAt: Date.now(),

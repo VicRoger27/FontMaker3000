@@ -67,10 +67,10 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-extrabold text-sm tracking-tight text-white">
-                  FontForge
+                  Font Maker
                 </span>
                 <span className="text-[10px] font-bold uppercase tracking-wider text-brand-400 bg-brand-500/10 px-1.5 py-0.2 rounded border border-brand-500/30">
-                  Studio
+                  3000
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">Custom Typography & Font Creator</p>

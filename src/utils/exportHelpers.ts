@@ -115,7 +115,7 @@ export async function downloadCompleteFontZip(project: FontProject) {
 </head>
 <body>
   <h1>${project.family} (${project.styleName})</h1>
-  <p style="color: #94a3b8;">Created with FontForge Studio by ${project.author || 'Anonymous'}</p>
+  <p style="color: #94a3b8;">Created with Font Maker 3000 by ${project.author || 'Anonymous'}</p>
 
   <div class="specimen-card">
     <h3 style="color: #38bdf8; margin-top: 0;">Interactive Live Tester (Click & Type)</h3>

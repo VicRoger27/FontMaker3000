@@ -20,7 +20,7 @@ export const App: React.FC = () => {
     if (saved && saved.glyphs && saved.metrics) {
       return saved;
     }
-    return createDefaultFontProject('ModernForge', true);
+    return createDefaultFontProject('Font Maker 3000', true);
   });
 
   const [selectedChar, setSelectedChar] = useState<string>('A');
