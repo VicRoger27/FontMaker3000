@@ -88,6 +88,46 @@ export const App: React.FC = () => {
     }
   }, [history, historyIndex]);
 
+  // Global Keyboard Shortcuts for Undo (Ctrl+Z) and Redo (Ctrl+Shift+Z / Ctrl+Y)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      const isTextInput =
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable);
+
+      const isCtrlOrCmd = e.ctrlKey || e.metaKey;
+      if (!isCtrlOrCmd) return;
+
+      if (e.key.toLowerCase() === 'z') {
+        if (e.shiftKey) {
+          // Ctrl + Shift + Z -> Redo
+          if (!isTextInput) {
+            e.preventDefault();
+            handleRedo();
+          }
+        } else {
+          // Ctrl + Z -> Undo
+          if (!isTextInput) {
+            e.preventDefault();
+            handleUndo();
+          }
+        }
+      } else if (e.key.toLowerCase() === 'y') {
+        // Ctrl + Y -> Redo
+        if (!isTextInput) {
+          e.preventDefault();
+          handleRedo();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [handleUndo, handleRedo]);
+
   const charsList = Object.keys(project.glyphs);
   const currentIndex = charsList.indexOf(selectedChar);
 

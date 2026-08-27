@@ -139,7 +139,7 @@ export const GlyphEditor: React.FC<GlyphEditorProps> = ({
             <button
               onClick={onRedo}
               disabled={!canRedo}
-              title="Redo (Ctrl+Y)"
+              title="Redo (Ctrl+Shift+Z or Ctrl+Y)"
               className="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 disabled:opacity-40 disabled:hover:bg-slate-800 transition-colors"
             >
               <Redo2 size={16} />
