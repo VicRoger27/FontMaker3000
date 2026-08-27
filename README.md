@@ -1,4 +1,4 @@
-# 🖋️ FontMaker 3000 (FontForge Studio)
+# 🖋️ Font Maker 3000
 
 A modern, intuitive, and feature-rich typography and custom font creator web application. Easily design, style, and compile custom vector fonts (.TTF, .OTF, .WOFF, .WOFF2) directly in your browser with real-time live preview and zero-hosting web embeds.
 
